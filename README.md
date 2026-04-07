@@ -1,3 +1,2 @@
 # c-Tool
-an all in one bateries included c/c++ tool for compilathion
-
+An all in one batteries included c/c++ tool for compilation
