@@ -307,6 +307,8 @@ def cmake_list_check():
     cmake_project_path = user_dir / "CMakeLists.txt"
     if project_config.exists():
         with open('project_config', 'r') as file:
+            cbo="{"
+            cbc="}"
             data = json.load(file)
             name = data.get('name')
             language = data.get('language')
@@ -316,27 +318,24 @@ def cmake_list_check():
             src_files = src_scan()
             dependencys = dependency_scan()
             h_files = h_scan()
-            cmake_items=[   f"cmake_minimum_required(VERSION {cmake_min})",
+            cmake_items = [
+                            f"cmake_minimum_required(VERSION {cmake_min})",
                             f"project({name} VERSION {version})",
                             f"enable_language({language})",
                             f"set(CMAKE_{language}_STANDARD {standard})",
                             f"set(CMAKE_{language}_STANDARD_REQUIRED ON)",
-                            f"set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${user_dir})",
+                            f"set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {user_dir})",
                             "",
                             "# Source files",
-                            f"add_executable(${{PROJECT_NAME}}",
-                            f" {src_files}",
-                            f")",
-                            "",
-                            "# Header files",
-                            f"target_include_directories(${{PROJECT_NAME}} PRIVATE",
-                            f"{h_files}",
+                            f"add_executable({name}",
+                            f"    {src_files}",
                             f")",
                             "",
                             "# Dependencies",
-                            f"target_link_libraries(${{PROJECT_NAME}}",
-                            f"{dependencys}",
-                            f")"]
+                            f"target_link_libraries({name}",
+                            f"    {dependencies}",
+                            f")"
+                            ]
             new_cmake_txt = "\n".join(cmake_items)
             if cmake_project_path.exists():
                 old_cmake_txt = cmake_project_path.read_text()
@@ -352,20 +351,20 @@ def cmake_list_check():
     else:
         setup_project()
         cmake_list_check()
-                
-
-    #use dependency scan to add dependencys to the project json 
+            
+              #use dependency scan to add dependencys to the project json (CMake json)
 def src_scan():
+    extensions = ["*.c", "*.cpp","*.hpp", "*.h","*.hxx"]
+    files = []
+    for ext in extensions:
+        files.extend(user_dir.rglob(ext))
+    return files
     
-
 def dependency_scan():
     # find all libs on project files 
     # find all header files 
     # add them to config json heeders or dependencies
     # call add_dependency_vscode 
-
-def h_scan():
-
 
 def add_dependency_vscode():
     # check vscode true or false
