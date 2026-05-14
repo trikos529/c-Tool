@@ -1,4 +1,4 @@
-import subprocess
+import subprocess #legacy dep 
 from pathlib import Path
 import platform
 import json
@@ -6,7 +6,6 @@ import urllib.request
 import zipfile
 import tarfile
 
-operating_system = platform.system()
 script_dir = Path(__file__).parent.absolute()
 user_dir = Path.cwd()
 downloads_dir = script_dir / "downloads"
@@ -54,7 +53,7 @@ def project_config_add( name: str, language: str,standard: str,version:str,cmake
     with project_config.open("w") as f:
         json.dump(data, f)
 
-def windows_gcc():
+def gcc():
    gcc_path = downloads_dir / "gcc"
    if gcc_path.exists():
         config_add("gcc")
@@ -63,7 +62,7 @@ def windows_gcc():
     #dowload gcc new comand
     config_add("gcc")
 
-def windows_llvm():
+def llvm():
     llvm_path = downloads_dir / "LLVM"
     if llvm_path.exists():
         config_add("LLVM")
@@ -72,43 +71,7 @@ def windows_llvm():
         #dowload llvm new way 
         config_add("LLVM")
 
-def linux_gcc():
-    gcc_path = downloads_dir / "gcc"
-    if gcc_path.exists():
-        config_add("gcc")
-    else:
-        downloads_dir.mkdir(exist_ok=True)
-        #dowload gcc new way 
-        config_add("gcc")
-
-def linux_llvm():
-    llvm_path = downloads_dir / "LLVM"
-    if llvm_path.exists():
-        config_add("LLVM")
-    else:
-        downloads_dir.mkdir(exist_ok=True)
-        #dowload llvm new way 
-        config_add("LLVM")
-
-def macos_gcc():
-    gcc_path = downloads_dir / "gcc"
-    if gcc_path.exists():
-        config_add("gcc")
-    else:
-        downloads_dir.mkdir(exist_ok=True)              
-        #dowload gcc new way
-        config_add("gcc")
-
-def macos_llvm():
-    llvm_path = downloads_dir / "LLVM"
-    if llvm_path.exists():
-        config_add("LLVM")
-    else:
-        downloads_dir.mkdir(exist_ok=True)
-        #dowload llvm new way 
-        config_add("LLVM")
-
-def download_emscripten():
+def emscripten():
     em_path = downloads_dir / "emscripten"
     if em_path.exists():
         config_add("emscripten")
@@ -133,60 +96,24 @@ def compiler_select():
             print("Please enter a valid number")
             continue
 
-        if operating_system == "Windows":
-            if user_input == 1:
-                windows_gcc()
-            elif user_input == 2:
-                windows_llvm()
-            elif user_input == 3:
-                download_emscripten()
-            elif user_input == 4:
-                windows_gcc()
-                windows_llvm()
-                download_emscripten()
-            elif user_input == 5:  #not yet 
+        if user_input == 1:
+                gcc()
+        elif user_input == 2:
+                llvm()
+        elif user_input == 3:
+                emscripten()
+        elif user_input == 4:
+                gcc()
+                llvm()
+                emscripten()
+        elif user_input == 5:  #not yet 
                 print("instructions go here")
-            elif user_input == 6:
+        elif user_input == 6:
                 should_compiler_select_run = False
-            else:
-                print("Invalid Option")
-        
-        # Linux
-        elif operating_system == "Linux":
-            if user_input == 1:   
-                linux_gcc()
-            elif user_input == 2:
-                linux_llvm()
-            elif user_input == 3:
-                download_emscripten()
-            elif user_input == 4:
-                linux_gcc()
-                linux_llvm()
-                download_emscripten()
-            elif user_input == 5:
-                should_compiler_select_run = False
-            else:
-                print("Invalid Option")
-        
-        # MacOS
-        elif operating_system == "Darwin":
-            if user_input == 1:
-                macos_gcc()
-            elif user_input == 2:
-                macos_llvm()
-            elif user_input == 3:
-               download_emscripten()
-            elif user_input == 4:
-                macos_gcc()
-                macos_llvm()
-                download_emscripten()
-            elif user_input == 5:
-                should_compiler_select_run = False
-            else:
-                print("Invalid Option")
         else:
-            print("OS not recognised!")
-
+                print("Invalid Option")
+        
+       
 def cmake_check():
     cmake_path = downloads_dir / "cmake"
     if cmake_path.exists():
@@ -386,7 +313,6 @@ def cmake_list_check():
             standard = data.get('standard')
             version = data.get('version')
             cmake_min = data.get('cmake_min')
-            output = data.get('output') 
             src_files = src_scan()
             dependencys = dependency_scan()
             h_files = h_scan()
@@ -429,14 +355,14 @@ def cmake_list_check():
                 
 
     #use dependency scan to add dependencys to the project json 
+def src_scan():
+    
 
 def dependency_scan():
     # find all libs on project files 
     # find all header files 
     # add them to config json heeders or dependencies
     # call add_dependency_vscode 
-
-def src_scan():
 
 def h_scan():
 
